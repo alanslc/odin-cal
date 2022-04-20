@@ -10,6 +10,7 @@ function Calculator() {
    this.rightOperand = null;
    this.op = null;
    this.inputState = INPUT_STATUE_NONE;
+   this.error = false;
 
    this.init = function () {
       const pad = document.querySelector('.pad');
@@ -26,13 +27,18 @@ function Calculator() {
       const disp = document.querySelector('.disp');
 
       let s;
-      switch (this.inputState) {
-         case INPUT_STATUE_LEFT_OPERAND:
-            s = this.leftOperand.toString(); break;
-         case INPUT_STATUE_RIGHT_OPERAND:
-            s = this.rightOperand.toString(); break;
-         default:
-            s = '0';
+      if (this.error) {
+         s = 'OOPS';
+      }
+      else {
+         switch (this.inputState) {
+            case INPUT_STATUE_LEFT_OPERAND:
+               s = this.leftOperand.toString(); break;
+            case INPUT_STATUE_RIGHT_OPERAND:
+               s = this.rightOperand.toString(); break;
+            default:
+               s = '0';
+         }
       }
       disp.innerText = s == '' ? '0' : s;
    };
@@ -64,11 +70,14 @@ function Calculator() {
    };
 
    this.doOperation = function (opKey) {
+      if (this.error)
+         return;
+
       if (this.leftOperand.isNull()) {
          // No operand input, set 0 as left operand.
-         this.leftOperand = new Num();
+         this.leftOperand = new Num(0);
          this.op = opKey;
-         this.inputState = INPUT_STATUE_LEFT_OPERAND;
+         this.inputState = INPUT_STATUE_RIGHT_OPERAND;
          return;
       }
 
@@ -87,11 +96,15 @@ function Calculator() {
             // This is case 1
             // Alerady is "left op right", this new operator make the forumla evaluate.
             // left op right => result newOp
-            const result = this.operate(this.leftOperand.toNumber(), this.rightOperand.toNumber(), this.op);
-            this.op = opKey;
-            this.leftOperand = new Num(result);
-            // Display the result
-            this.inputState = INPUT_STATUE_LEFT_OPERAND;
+            if (this.op == 'div' && this.rightOperand.toNumber() == 0) {
+               this.error = true;
+            } else {
+               const result = this.operate(this.leftOperand.toNumber(), this.rightOperand.toNumber(), this.op);
+               this.op = opKey;
+               this.leftOperand = new Num(result);
+               // Display the result
+               this.inputState = INPUT_STATUE_LEFT_OPERAND;
+            }
             this.display();
             this.rightOperand = new Num();
             // Next input will be right operand
@@ -110,6 +123,9 @@ function Calculator() {
    };
 
    this.pressNum = function (num) {
+      if (this.error)
+         return;
+
       if (this.inputState == INPUT_STATUE_NONE) {
          // Clear for doOperation Case 2.
          // If not clear, will appear this case:
@@ -127,6 +143,9 @@ function Calculator() {
    };
 
    this.pressDot = function () {
+      if (this.error)
+         return;
+
       if (this.inputState == INPUT_STATUE_NONE) {
          this.leftOperand = new Num();
          this.inputState = INPUT_STATUE_LEFT_OPERAND;
@@ -138,6 +157,9 @@ function Calculator() {
    };
 
    this.pressSign = function () {
+      if (this.error)
+         return;
+
       if (this.inputState != INPUT_STATUE_NONE) {
          const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
          operand.toggleSign();
@@ -146,6 +168,9 @@ function Calculator() {
    };
 
    this.pressDel = function () {
+      if (this.error)
+         return;
+
       if (this.inputState != INPUT_STATUE_NONE) {
          const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
          operand.removeDigit();
@@ -164,6 +189,7 @@ function Calculator() {
       this.leftOperand = new Num();
       this.righttOperand = new Num();
       this.op = null;
+      this.error = false;
    };
 
    this.operate = function (a, b, op) {
@@ -206,6 +232,9 @@ function Num(n) {
    };
 
    this.dot = function () {
+      if (this.mode == INPUT_LOCKED)
+         return;
+
       if (this.intPart == '')
          this.intPart = '0';
       this.mode = INPUT_FRACTION_MODE;
@@ -231,6 +260,9 @@ function Num(n) {
    };
 
    this.removeDigit = function () {
+      if (this.mode == INPUT_LOCKED)
+         return;
+
       if (this.mode == INPUT_FRACTION_MODE) {
          if (this.fraction.length > 0) {
             if (this.fraction.length == 1)
@@ -248,7 +280,10 @@ function Num(n) {
    };
 
    this.toggleSign = function () {
-      if (this.intPart>0 || this.fraction>0)
+      if (this.mode == INPUT_LOCKED)
+         return;
+
+      if (this.intPart > 0 || this.fraction > 0)
          this.sign = this.sign ? '' : '-';
    };
 
