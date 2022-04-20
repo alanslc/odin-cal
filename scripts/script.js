@@ -174,8 +174,7 @@ function Calculator() {
       if (this.inputState != INPUT_STATUE_NONE) {
          const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
          operand.removeDigit();
-         if (operand.isNull())
-            this.display();
+         this.display();
       }
    };
 
