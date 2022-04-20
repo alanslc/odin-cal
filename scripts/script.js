@@ -48,14 +48,20 @@ function Calculator() {
             this.inputState = INPUT_STATUE_LEFT_OPERAND;
          }
 
-         if (this.inputState == INPUT_STATUE_LEFT_OPERAND) {
-            if (this.leftOperand.len() < MAX_DIGIT) {
-               this.leftOperand.inputDigit(btn.dataset.key);
-               this.display();
-            }
+         const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+         if (operand.len() < MAX_DIGIT) {
+            this.leftOperand.inputDigit(btn.dataset.key);
+            this.display();
          }
-         // this.displayNumber = buttonPressed.dataset.key;
       }
+      else if (btn.id == 'ac') {
+         this.clearAll();
+         this.display();
+      }
+   };
+
+   this.clearAll = function () {
+      this.inputState = INPUT_STATUE_NONE;
    };
 
    this.init();
