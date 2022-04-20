@@ -41,19 +41,21 @@ function Calculator() {
 
    this.keyPressedByMouse = function (e) {
       const btn = e.target;
+      const key = btn.dataset.key;
+
       if (btn.classList.contains('num')) {
-         this.pressNum(btn.dataset.key);
+         this.pressNum(key);
       }
-      else if (btn.id == 'dot') {
+      else if (key == 'dot') {
          this.pressDot();
       }
-      else if (btn.id == 'sign') {
+      else if (key == 'sign') {
          this.pressSign();
       }
-      else if (btn.id == 'del') {
+      else if (key == 'del') {
          this.pressDel();
       }
-      else if (btn.id == 'ac') {
+      else if (key == 'ac') {
          this.pressAc();
       }
    };
