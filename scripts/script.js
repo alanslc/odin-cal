@@ -248,7 +248,7 @@ function Num(n) {
    };
 
    this.toggleSign = function () {
-      if (this.mode != INPUT_FRACTION_MODE && this.intPart)
+      if (this.intPart>0 || this.fraction>0)
          this.sign = this.sign ? '' : '-';
    };
 
