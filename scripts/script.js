@@ -54,6 +54,17 @@ function Calculator() {
             this.display();
          }
       }
+      else if (btn.id == 'dot') {
+         if (this.inputState == INPUT_STATUE_NONE) {
+            this.leftOperand = new Num();
+            this.inputState = INPUT_STATUE_LEFT_OPERAND;
+         }
+
+         const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+         operand.dot();
+         console.log('dot');
+         this.display();
+      }
       else if (btn.id == 'ac') {
          this.clearAll();
          this.display();
@@ -81,6 +92,10 @@ function Num(intPart = '', fraction = '', sign = '') {
       return 0;
    }
 
+   this.dot = function () {
+      this.inputIntPart = false;
+   }
+
    this.inputDigit = function (ch) {
       if (ch == null || ch == undefined || isNaN(ch))
          return;
@@ -104,8 +119,12 @@ function Num(intPart = '', fraction = '', sign = '') {
    this.toString = function () {
       if (this.intPart == '')
          return '0';
-      else
-         return this.intPart;
+
+      let s = this.intPart;
+      if (!this.inputIntPart)
+         s += '.' + this.fraction;
+
+      return s;
    }
 }
 
