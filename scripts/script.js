@@ -37,7 +37,6 @@ function Calculator() {
             n = new Num();
       }
       disp.innerText = n.toString();
-      console.log('display')
    };
 
    this.keyPressedByMouse = function (e) {
@@ -62,7 +61,6 @@ function Calculator() {
 
          const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
          operand.dot();
-         console.log('dot');
          this.display();
       }
       else if (btn.id == 'ac') {
@@ -79,7 +77,10 @@ function Calculator() {
 }
 
 function Num(intPart = '', fraction = '', sign = '') {
-   this.inputIntPart = true;
+   const INPUT_INT_MODE = 0;
+   const INPUT_FRACTION_MODE = 1;
+
+   this.mode = INPUT_INT_MODE;
    this.sign = '';
    this.intPart = '';
    this.fraction = ''
@@ -100,12 +101,19 @@ function Num(intPart = '', fraction = '', sign = '') {
       if (ch == null || ch == undefined || isNaN(ch))
          return;
 
-      if (ch >= 0 && ch <= 9) {
-         if (this.inputIntPart)
+      if (ch == '0') {
+         if (this.mode == INPUT_FRACTION_MODE)
+            this.fraction += ch;
+         else if (!this.intPart.startsWith('0'))
+            this.intPart += '0';
+      } else if (ch >= 1 && ch <= 9) {
+         if (mode == INPUT_INT_MODE)
             this.intPart += ch;
          else
             this.fraction += ch;
       }
+
+      return this;
    }
 
    this.removeDigit = function () {
