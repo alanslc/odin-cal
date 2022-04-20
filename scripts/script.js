@@ -70,6 +70,13 @@ function Calculator() {
             this.display();
          }
       }
+      else if (btn.id == 'del') {
+         if (this.inputState != INPUT_STATUE_NONE) {
+            const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+            operand.removeDigit();
+            this.display();
+         }
+      }
       else if (btn.id == 'ac') {
          this.clearAll();
          this.display();
@@ -124,11 +131,25 @@ function Num(intPart = '', fraction = '', sign = '') {
    }
 
    this.removeDigit = function () {
+      if (this.mode == INPUT_FRACTION_MODE) {
+         if (this.fraction.length > 0) {
+            if (this.fraction.length == 1)
+               this.mode = INPUT_INT_MODE;
+            this.fraction = removeLast(this.fraction);
+         }
+      } else {
+         if (this.intPart.length > 0) {
+            if (this.intPart.length == 1)
+               this.sign = '';
+            this.intPart = removeLast(this.intPart);
+         }
+      }
       return this;
    }
 
    this.toggleSign = function () {
-      this.sign = this.sign ? '' : '-';
+      if (this.intPart)
+         this.sign = this.sign ? '' : '-';
    }
 
    this.toString = function () {
@@ -140,6 +161,10 @@ function Num(intPart = '', fraction = '', sign = '') {
          s += '.' + this.fraction;
 
       return s;
+   }
+
+   function removeLast(s) {
+      return s.length > 0 ? s.substring(0, s.length - 1) : '';
    }
 }
 
