@@ -40,7 +40,7 @@ function Calculator() {
          default:
             s = '0';
       }
-      disp.innerText = s;
+      disp.innerText = s == '' ? '0' : s;
    };
 
    this.keyPressedByMouse = function (e) {
@@ -145,7 +145,8 @@ function Calculator() {
       if (this.inputState != INPUT_STATUE_NONE) {
          const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
          operand.removeDigit();
-         this.display();
+         if (operand.isNull())
+            this.display();
       }
    };
 
