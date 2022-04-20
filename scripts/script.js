@@ -1,12 +1,6 @@
 const MAX_DIGIT = 15;
 const cal = new Calculator();
 
-let n = 123456.789;
-n = n * n;
-n = n * n;
-let nn = new Num(n);
-console.log(nn.toString());
-
 function Calculator() {
    const INPUT_STATUE_NONE = 0;
    const INPUT_STATUE_LEFT_OPERAND = 1;
@@ -70,7 +64,7 @@ function Calculator() {
    };
 
    this.doOperation = function (opKey) {
-      if (this.inputState = INPUT_STATUE_NONE) {
+      if (this.leftOperand.isNull()) {
          // No operand input, set 0 as left operand.
          this.leftOperand = new Num();
          this.op = opKey;
@@ -85,32 +79,42 @@ function Calculator() {
          this.inputState = INPUT_STATUE_RIGHT_OPERAND;
          this.rightOperand = new Num();
       }
-      // Previously has an operator, there are two possibilities:
-      // 1) 123 op 123 [now], then calculate it.
-      // 2) 123 op [now], then change the operator to this one.
-      else if (!this.rightOperand.isNull()) {
-         // This is case 1
-         // Alerady is "left op right", this new operator make the forumla evaluate.
-         // left op right => result newOp
-         const result = this.operate(this.leftOperand.toNumber(), this.rightOperand.toNumber(), this.op);
-         this.op = opKey;
-         this.leftOperand = new Num(result);
-         // Display the result
-         this.inputState = INPUT_STATUE_LEFT_OPERAND;
-         this.display();
-         // Next input will be right operand
-         this.rightOperand = new Num();
-         this.inputState = INPUT_STATUE_RIGHT_OPERAND;
-      } else {
+      else {
+         // Previously has an operator, there are two possibilities:
+         // 1) 123 op 456 [now], then calculate it.
+         // 2) 789 op [now], then change the operator to this one.
+         if (!this.rightOperand.isNull()) {
+            // This is case 1
+            // Alerady is "left op right", this new operator make the forumla evaluate.
+            // left op right => result newOp
+            const result = this.operate(this.leftOperand.toNumber(), this.rightOperand.toNumber(), this.op);
+            this.op = opKey;
+            this.leftOperand = new Num(result);
+            // Display the result
+            this.inputState = INPUT_STATUE_LEFT_OPERAND;
+            this.display();
+            this.rightOperand = new Num();
+            // Next input will be right operand
+            // this.inputState = INPUT_STATUE_RIGHT_OPERAND;
+         }
+         // After Case 1 calculation, it also will change to case 2.
+         // 3 op 6 [now] => 18 [now]
+
          // This is case 2
-         // If new op is =, next number input will be as left operand, otherwise will be as right operand
-         this.inputState = opKey == 'equ' ? INPUT_STATUE_LEFT_OPERAND : INPUT_STATUE_RIGHT_OPERAND;
+         // If new op is =, set input status to none, when next number input, left operand will be recreate as empty,
+         // to avoid clear the current left operand, and allow to change operator to others.
+         // if new op is not =, next number input will be as right operand.
+         this.inputState = opKey == 'equ' ? INPUT_STATUE_NONE : INPUT_STATUE_RIGHT_OPERAND;
          this.op = opKey;
       }
    };
 
    this.pressNum = function (num) {
       if (this.inputState == INPUT_STATUE_NONE) {
+         // Clear for doOperation Case 2.
+         // If not clear, will appear this case:
+         // equ 123 mul, do Operator will try to calcaule 123 equ null
+         this.op = null;
          this.leftOperand = new Num();
          this.inputState = INPUT_STATUE_LEFT_OPERAND;
       }
@@ -181,6 +185,8 @@ function Calculator() {
    this.div = function (a, b) {
       return a / b;
    };
+
+   // init
    this.init();
 }
 
