@@ -42,45 +42,65 @@ function Calculator() {
    this.keyPressedByMouse = function (e) {
       const btn = e.target;
       if (btn.classList.contains('num')) {
-         if (this.inputState == INPUT_STATUE_NONE) {
-            this.leftOperand = new Num();
-            this.inputState = INPUT_STATUE_LEFT_OPERAND;
-         }
-
-         const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
-         if (operand.len() < MAX_DIGIT) {
-            this.leftOperand.inputDigit(btn.dataset.key);
-            this.display();
-         }
+         this.pressNum(btn.dataset.key);
       }
       else if (btn.id == 'dot') {
-         if (this.inputState == INPUT_STATUE_NONE) {
-            this.leftOperand = new Num();
-            this.inputState = INPUT_STATUE_LEFT_OPERAND;
-         }
-
-         const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
-         operand.dot();
-         this.display();
+         this.pressDot();
       }
       else if (btn.id == 'sign') {
-         if (this.inputState != INPUT_STATUE_NONE) {
-            const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
-            operand.toggleSign();
-            this.display();
-         }
+         this.pressSign();
       }
       else if (btn.id == 'del') {
-         if (this.inputState != INPUT_STATUE_NONE) {
-            const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
-            operand.removeDigit();
-            this.display();
-         }
+         this.pressDel();
       }
       else if (btn.id == 'ac') {
-         this.clearAll();
+         this.pressAc();
+      }
+   };
+
+   this.pressNum = function (num) {
+      if (this.inputState == INPUT_STATUE_NONE) {
+         this.leftOperand = new Num();
+         this.inputState = INPUT_STATUE_LEFT_OPERAND;
+      }
+
+      const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+      if (operand.len() < MAX_DIGIT) {
+         this.leftOperand.inputDigit(num);
          this.display();
       }
+   };
+
+   this.pressDot = function () {
+      if (this.inputState == INPUT_STATUE_NONE) {
+         this.leftOperand = new Num();
+         this.inputState = INPUT_STATUE_LEFT_OPERAND;
+      }
+
+      const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+      operand.dot();
+      this.display();
+   };
+
+   this.pressSign = function () {
+      if (this.inputState != INPUT_STATUE_NONE) {
+         const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+         operand.toggleSign();
+         this.display();
+      }
+   };
+
+   this.pressDel = function () {
+      if (this.inputState != INPUT_STATUE_NONE) {
+         const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+         operand.removeDigit();
+         this.display();
+      }
+   };
+
+   this.pressAc = function () {
+      this.clearAll();
+      this.display();
    };
 
    this.clearAll = function () {
