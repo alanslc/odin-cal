@@ -63,6 +63,13 @@ function Calculator() {
          operand.dot();
          this.display();
       }
+      else if (btn.id == 'sign') {
+         if (this.inputState != INPUT_STATUE_NONE) {
+            const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+            operand.toggleSign();
+            this.display();
+         }
+      }
       else if (btn.id == 'ac') {
          this.clearAll();
          this.display();
@@ -94,7 +101,7 @@ function Num(intPart = '', fraction = '', sign = '') {
    }
 
    this.dot = function () {
-      this.inputIntPart = false;
+      this.mode = INPUT_FRACTION_MODE;
    }
 
    this.inputDigit = function (ch) {
@@ -107,7 +114,7 @@ function Num(intPart = '', fraction = '', sign = '') {
          else if (!this.intPart.startsWith('0'))
             this.intPart += '0';
       } else if (ch >= 1 && ch <= 9) {
-         if (mode == INPUT_INT_MODE)
+         if (this.mode == INPUT_INT_MODE)
             this.intPart += ch;
          else
             this.fraction += ch;
@@ -121,15 +128,15 @@ function Num(intPart = '', fraction = '', sign = '') {
    }
 
    this.toggleSign = function () {
-      this.sign = this.sign ? '-' : '';
+      this.sign = this.sign ? '' : '-';
    }
 
    this.toString = function () {
       if (this.intPart == '')
          return '0';
 
-      let s = this.intPart;
-      if (!this.inputIntPart)
+      let s = this.sign + this.intPart;
+      if (this.mode == INPUT_FRACTION_MODE)
          s += '.' + this.fraction;
 
       return s;
