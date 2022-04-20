@@ -206,6 +206,8 @@ function Num(n) {
    };
 
    this.dot = function () {
+      if (this.intPart == '')
+         this.intPart = '0';
       this.mode = INPUT_FRACTION_MODE;
    };
 
