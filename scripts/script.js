@@ -46,10 +46,14 @@ function Calculator() {
    };
 
    this.keyDown = function (e) {
-      console.log(e.keyCode);
+      this.processInput(e.code);
    };
 
    this.keyPressedByMouse = function (e) {
+      this.processInput(e.target.dataset.key);
+   };
+
+   this.keyPressedByMousex = function (e) {
       const btn = e.target;
       const key = btn.dataset.key;
 
@@ -72,6 +76,44 @@ function Calculator() {
       }
       else if (key == 'ac') {
          this.pressAc();
+      }
+   };
+
+   this.processInput = function (key) {
+      const regexNumber = /^Digit|Numpad([\d]{1})$/;
+
+      console.log(key);
+
+      let match;
+      if (match = key.match(regexNumber)) {
+         this.pressNum(match[1]);
+      }
+      else if (key == 'NumpadDecimal' || key == 'Period') {
+         this.pressDot();
+      }
+      else if (key == 'Minus') {
+         this.pressSign();
+      }
+      else if (key == 'Backspace' || key == 'Delete') {
+         this.pressDel();
+      }
+      else if (key == 'Escape') {
+         this.pressAc();
+      }
+      else if (key == 'NumpadAdd') {
+         this.doOperation('add');
+      }
+      else if (key == 'NumpadSubstract') {
+         this.doOperation('sub');
+      }
+      else if (key == 'NumpadMultiply') {
+         this.doOperation('mul');
+      }
+      else if (key == 'NumpadDivide') {
+         this.doOperation('div');
+      }
+      else if (key == 'NumpadEnter' || key == 'Equal') {
+         this.doOperation('equ');
       }
    };
 
