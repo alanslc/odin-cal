@@ -13,7 +13,9 @@ function Calculator() {
    this.error = false;
 
    this.init = function () {
+      const body = document.querySelector('body');
       const pad = document.querySelector('.pad');
+      body.addEventListener('keydown', this.keyDown.bind(this));
       pad.addEventListener('click', this.keyPressedByMouse.bind(this));
 
       this.leftOperand = new Num();
@@ -41,6 +43,10 @@ function Calculator() {
          }
       }
       disp.innerText = s == '' ? '0' : s;
+   };
+
+   this.keyDown = function (e) {
+      console.log(e.keyCode);
    };
 
    this.keyPressedByMouse = function (e) {
