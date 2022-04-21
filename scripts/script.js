@@ -103,7 +103,7 @@ function Calculator() {
       else if (key == 'NumpadAdd') {
          this.doOperation('add');
       }
-      else if (key == 'NumpadSubstract') {
+      else if (key == 'NumpadSubtract') {
          this.doOperation('sub');
       }
       else if (key == 'NumpadMultiply') {
