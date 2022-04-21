@@ -208,11 +208,12 @@ function Calculator() {
       if (this.error)
          return;
 
-      if (this.inputState != INPUT_STATUE_NONE) {
-         const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
-         operand.toggleSign();
-         this.display();
-      }
+      if (this.inputState == INPUT_STATUE_NONE)
+         this.inputState = INPUT_STATUE_LEFT_OPERAND;
+
+      const operand = this.inputState == INPUT_STATUE_LEFT_OPERAND ? this.leftOperand : this.rightOperand;
+      operand.toggleSign();
+      this.display();
    };
 
    this.pressDel = function () {
